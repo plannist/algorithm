@@ -20,7 +20,8 @@ public class Battle {
     static String[][] arrays;
     static boolean[][] flag;
 
-    static int [] valid = new int[] {0, -1, 1};
+    static int [] validX = new int[] {-1, 1, 0, 0};
+    static int [] validY = new int[] {0,0,-1,1};
     public static void main(String [] args){
 
         System.out.println("ㅎ2");
@@ -52,25 +53,33 @@ public class Battle {
         arrays[3] = new String [] {"B", "B", "B", "W", "W"};
         arrays[4] = new String [] {"W", "W", "W", "W", "W"};
 
+//        for(boolean [] fl : flag){
+//            log.info("visited: {}", fl);
+//        }
+
         Battle battle = new Battle();
         int our = 0, there = 0;
         for(int i=0; i<x; i++){
             for(int j=0; j<y; j++){
-                if(arrays[i][j].equals("W")){
-                    int result = battle.bfs(i, j, "W");
-                    our += result * result;
-                }else{
-                    int result = battle.bfs(i, j, "B");
-                    there += result * result;
+                if(!flag[i][j]){
+                    int result = 0;
+                    if(arrays[i][j].equals("W")){
+                        result += battle.bfs(i, j, "W");
+                        our += result * result;
+                    }else{
+                        result += battle.bfs(i, j, "B");
+                        there += result * result;
+                    }
                 }
+
             }
         }
 
         log.info("our: {}, there: {}", our, there);
 
-        for(boolean [] fl : flag){
-            log.info("visited: {}", fl);
-        }
+//        for(boolean [] fl : flag){
+//            log.info("visited: {}", fl);
+//        }
 
 
     }
@@ -85,18 +94,18 @@ public class Battle {
         while (!q.isEmpty()){
             int x = q.peek()[0];
             int y = q.peek()[1];
+            log.info("x:{}, y:{}", x, y);
             q.poll();
-
-            for(int k=0; k< valid.length; k++){
-                int xVal = x + valid[k];
-                int yVal = y + valid[k];
-//                log.info("xVal: {}, yVal:{}, cnt:{}", xVal, yVal, cnt);
+            cnt ++;
+            for(int k=0; k< 4; k++){
+                int xVal = x + validX[k];
+                int yVal = y + validY[k];
+                log.info("xVal: {}, yVal:{}, cnt:{}", xVal, yVal, cnt);
                 if(xVal < 0 || xVal >= 5 || yVal < 0 || yVal >= 5 || flag[xVal][yVal]) continue;
 
                 if(arrays[xVal][yVal].equals(str)){
                     q.add(new int[]{xVal, yVal});
                     flag[xVal][yVal] = true;
-                    cnt ++;
                 }
 
             }
