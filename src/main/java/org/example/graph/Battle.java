@@ -5,6 +5,24 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.LinkedList;
 import java.util.Queue;
 
+/**
+ * 인접한 노드에 같은 편과 자기 자신의 숫자가 필요하다.
+ * [x][y] x가 0일때 : x와 x+1 검사 필요하다.
+ * [x][y] x가 0 보다 크고 x.length-1 보다 작을때 : x와 x-1, x+1 검사 필요 하다.
+ * [x][y] x가 x.length - 1 일때 x와 , x-1 검사 필요하다.
+ * {0, -1, 1}
+ *
+ *
+ * [x][y] y가 0일때 : y 와 y +1 검사 필요하다.
+ * [x][y] y가 0보다 크고 y.length-1 보다 작을때 : y 와 y-1, y+1 검사 필요하다.
+ * [x][y] y가 y.length-1 일때 : y와 y-1 검사 필요하다.
+ *
+ * [중요] 나를 기준으로 연결가능한 노드
+ * x = -1, +1,  0,  0     <<-- 앞으로 한칸 뒤로한칸 연결가능 함. 하지만 x기준으로 한칸씩 움직일 경우 y는 0으로 고정되어야한다. 반대의 경우도 마찬가지. 한마디로 앞뒤, 위아래로 검사시 xy축 반대축은 제자리로 고정된다.
+ * y =  0,  0, -1, +1     <<-- 마찬가지로 -1, +1 연결가능하지만 x가 -1 | +1일때 y는 움직일 수 없으며, y가 -1 | +1일때 x는 움직일 수 없는 경우의수도 넣어준다.
+ *
+ * */
+
 @Slf4j
 public class Battle {
 
@@ -20,29 +38,16 @@ public class Battle {
     static String[][] arrays;
     static boolean[][] flag;
 
+    static int result = 0;
+
     static int [] validX = new int[] {-1, 1, 0, 0};
     static int [] validY = new int[] {0,0,-1,1};
+
+    int x = 5, y=5;
     public static void main(String [] args){
 
         System.out.println("ㅎ2");
-        // array[0][0] : {array[1][0]}
-        // array[0][1] : null
-        // array[0][2] : {array[0][3], array[1][2]}
-        // ......
-        /**
-         * 인접한 노드에 같은 편과 자기 자신의 숫자가 필요하다.
-         * [x][y] x가 0일때 : x와 x+1 검사 필요하다.
-         * [x][y] x가 0 보다 크고 x.length-1 보다 작을때 : x와 x-1, x+1 검사 필요 하다.
-         * [x][y] x가 x.length - 1 일때 x와 , x-1 검사 필요하다.
-         * {0, -1, 1}
-         *
-         *
-         * [x][y] y가 0일때 : y 와 y +1 검사 필요하다.
-         * [x][y] y가 0보다 크고 y.length-1 보다 작을때 : y 와 y-1, y+1 검사 필요하다.
-         * [x][y] y가 y.length-1 일때 : y와 y-1 검사 필요하다.
-         *
-         *
-         * */
+
 
         int x = 5, y=5;
         arrays = new String[x][y];
@@ -59,29 +64,43 @@ public class Battle {
 
         Battle battle = new Battle();
         int our = 0, there = 0;
+//        for(int i=0; i<x; i++){
+//            for(int j=0; j<y; j++){
+//                if(!flag[i][j]){
+//                    int result = 0;
+//                    if(arrays[i][j].equals("W")){
+//                        result += battle.bfs(i, j, "W");
+//                        our += result * result;
+//                    }else{
+//                        result += battle.bfs(i, j, "B");
+//                        there += result * result;
+//                    }
+//                }
+//
+//            }
+//        }
+
         for(int i=0; i<x; i++){
             for(int j=0; j<y; j++){
+                String target = arrays[i][j];
                 if(!flag[i][j]){
-                    int result = 0;
-                    if(arrays[i][j].equals("W")){
-                        result += battle.bfs(i, j, "W");
+                    result =1;
+                    if(target.equals("W")){
+                        battle.dfs(i, j, target);
                         our += result * result;
                     }else{
-                        result += battle.bfs(i, j, "B");
+                        battle.dfs(i, j, target);
                         there += result * result;
                     }
                 }
-
             }
         }
 
         log.info("our: {}, there: {}", our, there);
 
-//        for(boolean [] fl : flag){
-//            log.info("visited: {}", fl);
-//        }
-
-
+        for(boolean [] fl : flag){
+            log.info("visited: {}", fl);
+        }
     }
 
     public int bfs(int i, int j, String str){
@@ -114,6 +133,22 @@ public class Battle {
 
         return cnt;
 
+    }
+
+    public void dfs(int i, int j, String target){
+        flag[i][j] = true;
+
+        for(int k=0; k<4; k++){
+            int xMove = i + validX[k];
+            int yMove = j + validY[k];
+            if(xMove < 0 || xMove >= x || yMove < 0 || yMove >= y) continue;
+            if(!flag[xMove][yMove]){
+                if(arrays[xMove][yMove].equals(target)){
+                    result++;
+                    dfs(xMove, yMove, target);
+                }
+            }
+        }
     }
 
 
