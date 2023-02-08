@@ -64,39 +64,41 @@ public class Battle {
 
         Battle battle = new Battle();
         int our = 0, there = 0;
-//        for(int i=0; i<x; i++){
-//            for(int j=0; j<y; j++){
-//                if(!flag[i][j]){
-//                    int result = 0;
-//                    if(arrays[i][j].equals("W")){
-//                        result += battle.bfs(i, j, "W");
-//                        our += result * result;
-//                    }else{
-//                        result += battle.bfs(i, j, "B");
-//                        there += result * result;
-//                    }
-//                }
-//
-//            }
-//        }
-
         for(int i=0; i<x; i++){
             for(int j=0; j<y; j++){
-                String target = arrays[i][j];
                 if(!flag[i][j]){
-                    result =1;
-                    if(target.equals("W")){
-                        battle.dfs(i, j, target);
+                    int result = 0;
+                    if(arrays[i][j].equals("W")){
+                        result += battle.reBsf(i, j, "W");
                         our += result * result;
                     }else{
-                        battle.dfs(i, j, target);
+                        result += battle.reBsf(i, j, "B");
                         there += result * result;
                     }
                 }
+
             }
         }
 
         log.info("our: {}, there: {}", our, there);
+
+//        for(int i=0; i<x; i++){
+//            for(int j=0; j<y; j++){
+//                String target = arrays[i][j];
+//                if(!flag[i][j]){
+//                    result =1;
+//                    if(target.equals("W")){
+//                        battle.dfs(i, j, target);
+//                        our += result * result;
+//                    }else{
+//                        battle.dfs(i, j, target);
+//                        there += result * result;
+//                    }
+//                }
+//            }
+//        }
+
+//        log.info("our: {}, there: {}", our, there);
 
         for(boolean [] fl : flag){
             log.info("visited: {}", fl);
@@ -149,6 +151,35 @@ public class Battle {
                 }
             }
         }
+    }
+
+    public int reBsf(int i, int j, String target){
+        int cnt = 0;
+        flag[i][j] = true;
+
+        Queue<int[]> q = new LinkedList<>();
+        q.add(new int[]{i, j});
+
+        while (!q.isEmpty()){
+            cnt++;
+            int[] temp = q.poll();
+            int tempX = temp[0];
+            int tempY = temp[1];
+            log.info("tempX:{}, tempY:{}", tempX, tempY);
+
+            for(int k=0; k<4; k++){
+                int nX = tempX + validX[k];
+                int nY = tempY + validY[k];
+                if(nX < 0 || nX >= x || nY < 0 || nY >= y) continue;
+                if(!flag[nX][nY] && arrays[nX][nY].equals(target)){
+                    flag[nX][nY] = true;
+                    q.add(new int[] {nX, nY});
+                }
+            }
+        }
+
+        return cnt;
+
     }
 
 
