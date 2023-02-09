@@ -2,10 +2,7 @@ package org.example.graph;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * ** 문제 **
@@ -44,7 +41,9 @@ public class DfsBfs {
         list.add(Arrays.asList(1,4));
         list.add(Arrays.asList(2,4));
         list.add(Arrays.asList(3,4));
-
+//        list.add(Arrays.asList(3,7));
+//        list.add(Arrays.asList(2,6));
+//        list.add(Arrays.asList(5,6));
 
 
 
@@ -62,11 +61,33 @@ public class DfsBfs {
 //
 //
         for(int i=1; i< graph.length; i++){
-            dfsBfs.dfs(i);
+//            dfsBfs.dfs(i);
+            dfsBfs.bfs(i);
         }
 
         log.info("visited: {}", dfsBfs.visited);
 
+
+    }
+
+    public void bfs(int i){
+//        visited[i] = true;
+        Queue<Integer> q = new LinkedList<>();
+        q.add(i);
+
+        while(!q.isEmpty()){
+            int n = q.poll();
+//            log.info("n: {}", n);
+            if(!visited[n]){
+                log.info("{}", n);
+                visited[n] = true;
+                for(int k=0; k< graph.length; k++){
+                    if(graph[n][k] > 0){
+                        q.add(k);
+                    }
+                }
+            }
+        }
 
     }
 
