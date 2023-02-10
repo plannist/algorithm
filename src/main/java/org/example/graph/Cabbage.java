@@ -9,7 +9,11 @@ public class Cabbage {
 
     static int x = 10;
     static int y = 8;
-    int count = 17;
+
+//    static int x = 10;
+//    static int y = 10;
+
+
     static int cnt = 0;
     static int [][] graph;
     static boolean [][] visited;
@@ -54,21 +58,44 @@ public class Cabbage {
             for(int i=0; i< graph.length; i++){
                 for(int j=0; j< graph[i].length; j++){
                     if(!visited[i][j])
-                        cabbage.bfs(i, j);
+//                        cabbage.bfs(i, j);
+                        cabbage.dfs(i, j, 0);
                 }
             }
-
-            log.info("cabbage Cnt: {}", cnt);
 
             for(boolean[] bl : visited){
                 log.info("bl: {}", bl);
             }
+
+            log.info("cabbage Cnt: {}", cnt);
+
+
 
         }catch(Exception e){
             log.error(e.getMessage(), e);
         }
 
     }
+
+    public void dfs(int x, int y, int idx){
+        if(graph[x][y] > 0 && !visited[x][y] && idx == 0)
+            cnt++;
+
+        visited[x][y] = true;
+
+        if(graph[x][y] > 0){
+            for(int k=0; k<4; k++){
+                int tempX = x + xMap[k];
+                int tempY = y + yMap[k];
+                if(tempX < 0 || tempX >= this.x || tempY < 0 || tempY >= this.y || visited[tempX][tempY] || graph[tempX][tempY] < 1) continue;
+
+                dfs(tempX, tempY, idx+1);
+
+            }
+        }
+    }
+
+
 
     public void bfs(int x, int y){
         Queue<int[]> q = new LinkedList<>();
