@@ -2,9 +2,7 @@ package org.example.graph;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 public class Cabbage {
@@ -12,8 +10,12 @@ public class Cabbage {
     static int x = 10;
     static int y = 8;
     int count = 17;
+    static int cnt = 0;
     static int [][] graph;
     static boolean [][] visited;
+
+    static int [] xMap = { 0, -1, 1, 0};
+    static int [] yMap = {-1,  0, 0, 1};
 
     public static void main(String [] args){
         try{
@@ -46,11 +48,62 @@ public class Cabbage {
             for(int[] is : graph){
                 log.info("graph : {}", is);
             }
+
+            Cabbage cabbage = new Cabbage();
+
+            for(int i=0; i< graph.length; i++){
+                for(int j=0; j< graph[i].length; j++){
+                    if(!visited[i][j])
+                        cabbage.bfs(i, j);
+                }
+            }
+
+            log.info("cabbage Cnt: {}", cnt);
+
+            for(boolean[] bl : visited){
+                log.info("bl: {}", bl);
+            }
+
         }catch(Exception e){
             log.error(e.getMessage(), e);
         }
 
+    }
 
+    public void bfs(int x, int y){
+        Queue<int[]> q = new LinkedList<>();
+        q.add(new int[] {x, y});
+        if(graph[x][y] > 0 && !visited[x][y])
+            cnt++;
+
+        visited[x][y] = true;
+
+        while(!q.isEmpty()){
+            int[] array = q.poll();
+            int qx = array[0]; //x축 기준
+            int qy = array[1]; //y축 기준
+            if(graph[qx][qy] > 0){
+                log.info(">>>>>>>>>");
+                for(int k=0; k<4; k++){ //검색할 범위
+                    int tempX = qx + xMap[k];
+                    int tempY = qy + yMap[k];
+                    log.info("tempX [{}] tempY [{}]", tempX, tempY);
+                    if(tempX < 0 || tempX >= this.x || tempY < 0 || tempY >= this.y) continue;
+                    log.info("1차 통과: {}, {}", graph[tempX][tempY], visited[tempX][tempY]);
+                    if(!visited[tempX][tempY] && graph[tempX][tempY] == 1){
+                        log.info("q에 들어갈 :{}", graph[tempX][tempY]);
+                        visited[tempX][tempY] = true;
+                        q.add(new int[]{tempX, tempY});
+                    }
+
+
+
+                }
+                log.info("<<<<<<<<<");
+            }
+
+
+        }
 
     }
 }
