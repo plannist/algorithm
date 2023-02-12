@@ -57,6 +57,7 @@ public class FarFarNode {
                 if(!flag[list.get(k).get(n)]){
                     flag[list.get(k).get(n)] = true;
                     q.add(list.get(k).get(n));
+                    log.info("q: {}", q);
                 }
             }
             max++;
