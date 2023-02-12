@@ -52,6 +52,7 @@ public class FarFarNode {
 
         while (!q.isEmpty()){
             int k = q.poll();
+            log.info("방문노드:{}, max: {}", k, max);
             for(int n =0; n<list.get(k).size(); n++){
                 if(!flag[list.get(k).get(n)]){
                     flag[list.get(k).get(n)] = true;
@@ -59,6 +60,7 @@ public class FarFarNode {
                 }
             }
             max++;
+
         }
     }
 
