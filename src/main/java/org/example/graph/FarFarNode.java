@@ -1,82 +1,71 @@
-package org.example.graph;
-
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 @Slf4j
-public class FarFarNode {
+public class FarFarNode{
 
-    static int [][] graph;
-    static boolean [][] visited;
+    public static List<List<Integer>> graph = new ArrayList<>();
+    public static boolean [] visited;
+    public static int cnt=0;
+    public static void main(String [] args){
+        int node = 6;
+        int [][] edge = {{3,6}, {4,3}, {3,2}, {1,3}, {1,2}, {2,4}, {5,2}};
+        FarFarNode farFarNode = new FarFarNode();
+        int result = farFarNode.solution(node, edge);
+        log.info("result: {}", result);
+    }
 
-    static List<List<Integer>> list = new ArrayList<>();;
-    static boolean [] flag;
+    public int solution(int node, int[][] edge){
 
-    static int max;
+        //그래프 초기화
+        for(int i=0; i<node+1; i++){
+            graph.add(new ArrayList<>());
+        }
+        //방문기록 초기화
+        visited = new boolean[node+1];
 
-    public static void main(String [] args) {
-        int[][] ins = {{3, 6}, {4, 3}, {3, 2}, {1, 3}, {1, 2}, {2, 4}, {5, 2}};
-
-
-        graph = new int[ins.length][ins.length];
-        visited = new boolean[ins.length][ins.length];
-
-
-        flag = new boolean[ins.length + 1];
-        for (int i = 0; i < ins.length; i++) {
-            list.add(i, new ArrayList<>());
+        //인접 리스트 생성 >> 바둑판 모양일때는 인접 행렬 유리, 트리 모양일때는 인접 리스트 유리
+        for(int i=0; i< edge.length; i++){
+            graph.get(edge[i][0]).add(edge[i][1]);
+            graph.get(edge[i][1]).add(edge[i][0]);
         }
 
-        for (int i = 0; i < ins.length; i++) {
-            list.get(ins[i][0]).add(ins[i][1]);
-            list.get(ins[i][1]).add(ins[i][0]);
-        }
+        log.info("graph: {}", graph);
 
         FarFarNode farFarNode = new FarFarNode();
-        for(int i=1; i<list.size(); i++){
-            if(!flag[i])
-//                farFarNode.dfs(i, 0);
-                farFarNode.bfs(i);
-        }
+        farFarNode.bfs(1);
 
-        log.info("list: {}", list);
 
-        log.info("max: {}", max);
+        return cnt;
     }
 
-    public void bfs(int i){
-        flag[i] = true;
+    public void bfs(int index){
+        visited[index] = true;
         Queue<Integer> q = new LinkedList<>();
-        q.add(i);
+        q.add(index);
 
-        while (!q.isEmpty()){
-            int k = q.poll();
-            log.info("방문노드:{}, max: {}", k, max);
-            for(int n =0; n<list.get(k).size(); n++){
-                if(!flag[list.get(k).get(n)]){
-                    flag[list.get(k).get(n)] = true;
-                    q.add(list.get(k).get(n));
-                    log.info("q: {}", q);
+        while(true){
+            Queue<Integer> temp = new LinkedList<>();
+
+            while (!q.isEmpty()){
+                int n = q.poll();
+                for(int i=0; i<graph.get(n).size(); i++){
+                    if(!visited[graph.get(n).get(i)]){
+                        visited[graph.get(n).get(i)] = true;
+                        temp.add(graph.get(n).get(i));
+                    }
                 }
             }
-            max++;
+
+            if(temp.isEmpty()) break;
+            q.addAll(temp);
+            cnt = temp.size();
 
         }
-    }
 
-    //dfs로 풀수 없는 이유는  1번과의 거리 체크 불가능함.
-    //ex) 1 > 3 > 6 > 3 > 4 > 2 > 5  에서 6번노드까지 최단거리측정했고 2번 움직였지만 다시 1번 노드를 방문하지않고 3번에서 분기 되어 이동하므로
-    public void dfs(int i, int cnt){
-        log.info("방문노드: {}, cnt: {}", i, cnt);
-        flag[i] = true;
-        if(cnt > max){
-            max = cnt;
-        }
-        for(int k : list.get(i)){
-            if(!flag[k]){
-                dfs(k, cnt + 1);
-            }
-        }
     }
 }
