@@ -53,6 +53,14 @@ public class Boxing {
         //경기 기록이 한번 뿐이라도 2위를 이긴다면 4위를 이기면 순위를 알 수있다.
         //즉 경기기록이 4번있는 선수가 2위나 4위라면
 
+        for(int i=1; i< n; i++){
+            int win =  winner.get(i).size();
+            int lose = loser.get(i).size();
+            if(win + lose >= n-1){
+
+            }
+        }
+
         log.info("rank: {}", rank);
 
         return 0;
