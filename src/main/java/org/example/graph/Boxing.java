@@ -48,7 +48,10 @@ public class Boxing {
         log.info("winner: {}", winner);
         log.info("loser: {}", loser);
 
-
+        //선수가 5명일때
+        //경기기록이 4번있다면 순위를 알수 있다.
+        //경기 기록이 한번 뿐이라도 2위를 이긴다면 4위를 이기면 순위를 알 수있다.
+        //즉 경기기록이 4번있는 선수가 2위나 4위라면
 
         log.info("rank: {}", rank);
 
