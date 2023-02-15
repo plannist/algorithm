@@ -1,11 +1,11 @@
 package org.example.graph;
 
-import lombok.extern.slf4j.Slf4j;
+//import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 
-@Slf4j
-public class Tomato {
+//@Slf4j
+public class Main {
 
     static int x;
     static int y;
@@ -16,7 +16,7 @@ public class Tomato {
 
     static boolean[][] visited;
 
-    static int day;
+    static int day = 0;
 
     static boolean graw;
 
@@ -51,7 +51,7 @@ public class Tomato {
             x = Integer.parseInt(xy.split(" ")[0]);
             y = Integer.parseInt(xy.split(" ")[1]);
 
-            log.info("x: {}, y: {}", x, y);
+//            log.info("x: {}, y: {}", x, y);
 
             edge = new int[y][x];
             graph = new int[y][x];
@@ -64,48 +64,54 @@ public class Tomato {
                 edge[c] = Arrays.stream(line.split(" ")).mapToInt(Integer :: parseInt).toArray();
                 graph[c] = Arrays.stream(line.split(" ")).mapToInt(Integer :: parseInt).toArray();
                 c++;
-                log.info("c: {}", c);
+//                log.info("c: {}", c);
 
             }
 
             scanner.close();
 
-            Arrays.stream(edge).forEach(e -> log.info("e: {}", e));
+//            Arrays.stream(edge).forEach(e -> log.info("e: {}", e));
 
-            Tomato tomato = new Tomato();
+            Main tomato = new Main();
 
             while(true){
                 graw = false;
                 tomato.bfs(0);
                 if(graw) day++;
-//                if(Arrays.stream(visited).allMatch(e -> e.equals(true))) break;
+                else break;
 
-                boolean flag = false;
+//                log.info("day: {}", day);
+//                Arrays.stream(edge).forEach(e -> log.info("e: {}", e));
+//                Arrays.stream(visited).forEach(e -> log.info("e: {}", e));
 
-                log.info("day: {}", day);
 
-                Arrays.stream(edge).forEach(e -> log.info("e: {}", e));
+            }
 
-                Arrays.stream(visited).forEach(e -> log.info("e: {}", e));
-
-                loop1 :
-                for(boolean[] v : visited){
-                    for(boolean j : v){
-                        if(!j){
-                            flag = false;
-                            break loop1;
-                        }else{
-                            flag = true;
-                        }
+            boolean flag = false;
+            loop1 :
+            for(boolean[] v : visited){
+//                log.info("visited: {}", v);
+                for(boolean j : v){
+                    if(!j){
+                        flag = false;
+                        break loop1;
+                    }else{
+                        flag = true;
                     }
                 }
+            }
 
-                if(flag){
-                    break;
-                }
+            System.out.println("flag for : "+flag);
+
+
+            if(flag){
+//                log.info("{}", day);
+                System.out.println(day);
+            }else{
+                System.out.println(-1);
             }
         }catch(Exception e){
-            log.error(e.getMessage());
+            System.out.println(e.getMessage());
         }
 
     }
@@ -113,6 +119,7 @@ public class Tomato {
     public void bfs(int index){
         for(int i=0; i< edge.length; i++){
             for(int j=0; j< edge[i].length; j++){
+//                log.info("edge[{}][{}]",i, j, edge[i][j]);
                 if(edge[i][j] > 0 && ! visited[i][j]){
                     visited[i][j] = true;
                     for(int k=0; k<4; k++){
@@ -123,20 +130,20 @@ public class Tomato {
                         if(graph[tI][tJ] == 0){
                             graph[tI][tJ] = 1;
                             graw = true;
-                            log.info(">>>>>");
-                            Arrays.stream(graph).forEach(e -> log.info("변경 중 graph: {}", e));
-                            log.info("<<<<<");
+//                            log.info(">>>>>");
+//                            Arrays.stream(graph).forEach(e -> log.info("변경 중 graph: {}", e));
+//                            log.info("<<<<<");
                         }else if(graph[tI][tJ] == -1){
                             visited[tI][tJ] = true;
                         }
                     }
+                }else if(edge[i][j] == -1 && ! visited[i][j]){
+                    visited[i][j] = true;
                 }
 
             }
 
-            log.info("변경 중 day: {}", day);
-
-
+//            log.info("변경 중 day: {}", day);
 //            Arrays.stream(edge).forEach(e -> log.info("변경 중 edge: {}", e));
         }
         for(int i=0; i< graph.length; i++){
